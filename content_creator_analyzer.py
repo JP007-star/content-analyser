@@ -49,12 +49,16 @@ DEFAULT_YOUTUBE = "@java-prasad"
 DEFAULT_INSTAGRAM = ""
 
 # ============ SESSION STATE INIT ============
-if "yt_data" not in st.session_state:
-    st.session_state.yt_data = {"channel": None, "videos": [], "loaded": False}
-if "ig_data" not in st.session_state:
-    st.session_state.ig_data = {"profile": None, "posts": [], "loaded": False}
-if "active_platform" not in st.session_state:
-    st.session_state.active_platform = "YouTube"
+# Initialize all session state keys
+for key, default in [
+    ("yt_data", {"channel": None, "videos": [], "loaded": False}),
+    ("ig_data", {"profile": None, "posts": [], "loaded": False}),
+    ("yt_demo", False),
+    ("ig_demo", False),
+    ("active_platform", "YouTube"),
+]:
+    if key not in st.session_state:
+        st.session_state[key] = default
 
 # ============ UTILITY FUNCTIONS ============
 def format_number(num: int) -> str:
@@ -304,7 +308,7 @@ def render_youtube_dashboard():
         st.markdown(f'<span class="platform-badge youtube-badge">YouTube</span> **{snippet.get("title", "Unknown")}**', unsafe_allow_html=True)
         st.caption(f"Channel ID: {channel['id']} | Joined: {format_date(snippet['publishedAt'], '%B %d, %Y')}")
     with c2:
-        if st.session_state.get("yt_demo", False): st.info("🎯 Demo Mode")
+        if st.session_state["yt_demo"]: st.info("🎯 Demo Mode")
 
     # Metrics
     m1, m2, m3, m4 = st.columns(4)
@@ -355,7 +359,7 @@ def render_instagram_dashboard():
         st.markdown(f'<span class="platform-badge instagram-badge">Instagram</span> **@{profile.get("username", "unknown")}**', unsafe_allow_html=True)
         st.caption(f"Type: {profile.get('account_type', 'UNKNOWN')} | Bio: {profile.get('biography', '—')[:80]}")
     with c2:
-        if st.session_state.get("ig_demo", False): st.info("🎯 Demo Mode")
+        if st.session_state["ig_demo"]: st.info("🎯 Demo Mode")
 
     # Metrics
     m1, m2, m3, m4 = st.columns(4)
@@ -428,7 +432,7 @@ def main():
                         videos = yt_fetch_videos(api_key, channel_id, max_videos)
                         if not videos: st.warning("No videos found"); st.stop()
                         st.session_state.yt_data = {"channel": channel, "videos": videos, "loaded": True}
-                        st.session_state.yt_demo = False
+                        st.session_state["yt_demo"] = False
                         st.success(f"✅ {len(videos)} videos loaded!")
                         st.rerun()
             with c2:
@@ -437,7 +441,7 @@ def main():
                         time.sleep(0.3)
                         channel, videos = get_demo_youtube()
                         st.session_state.yt_data = {"channel": channel, "videos": videos, "loaded": True}
-                        st.session_state.yt_demo = True
+                        st.session_state["yt_demo"] = True
                         st.success("✅ Demo loaded!")
                         st.rerun()
 
@@ -465,7 +469,7 @@ def main():
                         if not profile: st.error("Failed to fetch profile. Check token & permissions."); st.stop()
                         posts = ig_fetch_posts(access_token, user_id, max_posts)
                         st.session_state.ig_data = {"profile": profile, "posts": posts, "loaded": True}
-                        st.session_state.ig_demo = False
+                        st.session_state["ig_demo"] = False
                         st.success(f"✅ {len(posts)} posts loaded!")
                         st.rerun()
             with c2:
@@ -474,7 +478,7 @@ def main():
                         time.sleep(0.3)
                         profile, posts = get_demo_instagram()
                         st.session_state.ig_data = {"profile": profile, "posts": posts, "loaded": True}
-                        st.session_state.ig_demo = True
+                        st.session_state["ig_demo"] = True
                         st.success("✅ Demo loaded!")
                         st.rerun()
 
