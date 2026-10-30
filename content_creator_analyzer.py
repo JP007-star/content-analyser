@@ -436,7 +436,7 @@ def main():
                         st.success(f"✅ {len(videos)} videos loaded!")
                         st.rerun()
             with c2:
-                if st.button("🎯 Load YouTube Demo", use_container_width=True, key="yt_demo"):
+                if st.button("🎯 Load YouTube Demo", use_container_width=True, key="yt_demo_btn"):
                     with st.spinner("Loading demo..."):
                         time.sleep(0.3)
                         channel, videos = get_demo_youtube()
@@ -473,7 +473,7 @@ def main():
                         st.success(f"✅ {len(posts)} posts loaded!")
                         st.rerun()
             with c2:
-                if st.button("🎯 Load Instagram Demo", use_container_width=True, key="ig_demo"):
+                if st.button("🎯 Load Instagram Demo", use_container_width=True, key="ig_demo_btn"):
                     with st.spinner("Loading demo..."):
                         time.sleep(0.3)
                         profile, posts = get_demo_instagram()
