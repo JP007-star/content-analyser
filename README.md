@@ -1,41 +1,71 @@
-# Content Creator Analyzer 🎬
+# Content Analyser 🔱
 
-A unified Streamlit dashboard for analyzing **YouTube** and **Instagram** channels. Built for content creators who manage multiple platforms.
+**JP Cinematic Universe Toolkit** — Unified Streamlit dashboard for YouTube channel analysis + content optimization with AI skills.
 
-## Features
+## 🎯 Two Analyzers in One
 
-| Platform | Metrics | Visualizations |
-|----------|---------|----------------|
-| **YouTube** | Subscribers, Views, Videos, Avg Views | Views/Video, Engagement Rate, Upload Frequency, Cumulative Growth |
-| **Instagram** | Followers, Posts, Avg Engagement, Engagement Rate | Likes/Comments, Content Types, Post Frequency, Cumulative Likes |
-
-- 🔄 **Switch platforms** with one click
-- 📊 **Interactive Plotly charts** (zoom, hover, pan)
-- 📥 **Export to CSV** for further analysis
-- 🎯 **Demo mode** — test instantly without API keys
-- ⚡ **Cached API calls** (5 min TTL) — no rate limit issues
-- 🌐 **Deploy to Streamlit Cloud** in minutes
+| Analyzer | Purpose | Best For |
+|----------|---------|----------|
+| **📊 YouTube Channel Analyzer** | Fetch & visualize channel stats via YouTube Data API | Competitor research, growth tracking, audience insights |
+| **🎯 YouTube Analyzer (Skills & Tools)** | Hook scoring, title linting, retention analysis, viral research, script writing | Content creation, SEO optimization, retention improvement |
 
 ---
 
-## Quick Start (Local)
+## ✨ Features
+
+### 📊 YouTube Channel Analyzer (API-based)
+- **Channel Overview**: Subscribers, total views, video count, avg views/video
+- **Interactive Charts**: Views/video, engagement rate, upload frequency, cumulative growth
+- **Video Table**: Sortable, searchable, with CSV export
+- **Demo Mode**: Test instantly without API key
+- **Cached API Calls**: 5-min TTL, no rate limit issues
+
+### 🎯 YouTube Analyzer (Skills & Tools) — *New!*
+| Tool | Purpose | Input |
+|------|---------|-------|
+| **Hook Scorer** | Score first 15s against 21 formulas | Hook text |
+| **Title + Thumbnail Linter** | Check duplication, truncation, missing numbers | Title + thumb desc |
+| **Chapter Generator** | Validated YouTube chapters (0:00 start, ≥3, ≥10s) | SRT/VTT/JSON |
+| **Retention Analyzer** | Hook leak, cliffs, slide + transcript context | Studio CSV |
+| **Edit Decision List** | Dead air, filler words, repeat takes | Transcript |
+| **Viral Research** | Rank outliers by channel-relative performance | Collected JSON |
+| **SEO Optimizer** | Description, tags, hashtags for niche | Topic + niche |
+| **Script Writer** | Beat-by-beat script with [ON SCREEN] cues | Topic + format |
+| **Channel Audit** | THE single biggest fix from titles + retention | 10 titles + CSVs |
+| **Content Planner** | Weekly/monthly calendar sized to capacity | Videos/week |
+| **Comment Analyzer** | Sentiment, FAQ extraction, reply drafts | Comment thread |
+
+---
+
+## 🚀 Quick Start (Local)
 
 ```bash
-# 1. Clone / navigate to project
-cd youtube-analyzer
+# 1. Navigate to project
+cd content-analyser
 
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run
-streamlit run content_creator_analyzer.py
+# 3. Run (choose one):
+# Main app (both analyzers)
+streamlit run main_app.py
+
+# Channel analyzer only
+streamlit run youtube_analyzer_streamlit.py
+
+# Skills & tools only
+streamlit run youtube_analyzer_app.py
+
+# Or use launcher:
+# Windows: double-click run_app.bat
+# PowerShell: .\run_app.ps1
 ```
 
-Open `http://localhost:8501` — click **"Load YouTube Demo"** or **"Load Instagram Demo"** to see it work instantly.
+Open **http://localhost:8501** → Select analyzer in sidebar.
 
 ---
 
-## API Setup (For Real Data)
+## 🔑 API Setup (For Channel Analyzer)
 
 ### YouTube Data API v3
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
@@ -44,20 +74,11 @@ Open `http://localhost:8501` — click **"Load YouTube Demo"** or **"Load Instag
 4. Copy key (starts with `AIzaSy...`)
 5. Paste in app sidebar
 
-### Instagram Graph API
-> Requires **Instagram Business/Creator account** linked to a **Facebook Page**
-
-1. Go to [Meta for Developers](https://developers.facebook.com/)
-2. Create App → **Business** type
-3. Add Product → **Instagram Graph API**
-4. **Basic Display** → Generate **User Access Token**
-5. **Token Debugger** → Extend to **Long-lived token** (60 days)
-6. Required permissions: `instagram_graph_user_profile`, `instagram_graph_user_media`
-7. Paste token + User ID (or use `me`) in app sidebar
+> **Note:** YouTube Analyzer (Skills & Tools) works **without API keys** — uses local Python tools and your voice profile.
 
 ---
 
-## Deploy to Streamlit Cloud (Free)
+## 🌐 Deploy to Streamlit Cloud (Free)
 
 ### Option 1: GitHub + Streamlit Cloud (Recommended)
 
@@ -65,9 +86,9 @@ Open `http://localhost:8501` — click **"Load YouTube Demo"** or **"Load Instag
    ```bash
    git init
    git add .
-   git commit -m "Initial commit: Content Creator Analyzer"
+   git commit -m "Content Analyser: Channel API + Skills Tools"
    git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/content-creator-analyzer.git
+   git remote add origin https://github.com/JP007-star/content-analyser.git
    git push -u origin main
    ```
 
@@ -75,20 +96,16 @@ Open `http://localhost:8501` — click **"Load YouTube Demo"** or **"Load Instag
    - Go to [share.streamlit.io](https://share.streamlit.io/)
    - Sign in with GitHub
    - Click **"New app"**
-   - Repository: `your-username/content-creator-analyzer`
+   - Repository: `JP007-star/content-analyser`
    - Branch: `main`
-   - Main file path: `content_creator_analyzer.py`
+   - Main file path: `main_app.py`
    - Click **Deploy!**
 
-3. **Add secrets** (for API keys in production):
-   - In Streamlit Cloud dashboard → App → **Settings** → **Secrets**
-   - Add:
+3. **Add Secrets** (for API keys):
+   - Streamlit Cloud dashboard → App → **Settings** → **Secrets**
    ```toml
    YOUTUBE_API_KEY = "your_key_here"
-   INSTAGRAM_ACCESS_TOKEN = "your_token_here"
-   INSTAGRAM_USER_ID = "your_user_id"
    ```
-   - In code, read via `st.secrets["YOUTUBE_API_KEY"]`
 
 ### Option 2: Docker
 
@@ -99,63 +116,114 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
 EXPOSE 8501
-CMD ["streamlit", "run", "content_creator_analyzer.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "main_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
 ```
 
 ```bash
-docker build -t content-creator-analyzer .
-docker run -p 8501:8501 content-creator-analyzer
+docker build -t content-analyser .
+docker run -p 8501:8501 content-analyser
 ```
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
-youtube-analyzer/
-├── content_creator_analyzer.py   # Main Streamlit app
-├── requirements.txt              # Python dependencies
+content-analyser/
+├── main_app.py                      # Main entry (both analyzers)
+├── youtube_analyzer_streamlit.py    # Channel Analyzer (API)
+├── youtube_analyzer_app.py          # Skills & Tools Analyzer
+├── content_creator_analyzer.py      # Original multi-platform analyzer
+├── requirements.txt                 # Python dependencies
 ├── .streamlit/
-│   └── config.toml              # Streamlit configuration
-├── README.md                     # This file
-└── .gitignore                   # Git ignore rules
+│   └── config.toml                 # Streamlit config
+├── .claude/
+│   ├── youtube/
+│   │   ├── voice.md                # JP Cinematic Universe voice profile
+│   │   ├── QUICKSTART.md           # Daily workflow guide
+│   │   └── python-tools/           # 6 standalone tools
+│   │       ├── hookscore.py
+│   │       ├── title.py
+│   │       ├── chapters.py
+│   │       ├── retention.py
+│   │       ├── deadair.py
+│   │       └── swipe.py
+│   └── skills/                     # 11 Claude Code skills
+│       ├── yt-script/
+│       ├── yt-package/
+│       ├── yt-edit/
+│       ├── yt-retention/
+│       ├── yt-shorts/
+│       ├── yt-viral/
+│       ├── yt-seo/
+│       ├── yt-chapters/
+│       ├── yt-comment/
+│       ├── yt-plan/
+│       └── yt-audit/
+└── README.md
 ```
 
 ---
 
-## Screenshots
+## 🎬 Workflow: From Instagram Reel → YouTube Short
 
-### YouTube Dashboard
-- Channel overview cards (Subs, Views, Videos, Avg)
-- 4 interactive charts + searchable video table
-- CSV export
-
-### Instagram Dashboard
-- Profile overview (Followers, Posts, Engagement)
-- Content type breakdown (Reels, Images, Carousels)
-- Engagement trends + growth charts
-- CSV export
+```
+1. Instagram Reel posted (@trishul.stories)
+       │
+       ▼
+2. Hook Scorer: Score your IG caption first line
+       │
+       ▼
+3. Title + Thumb Linter: Optimize YT title/thumbnail pair
+       │
+       ▼
+4. SEO Optimizer: Generate tags, description, hashtags
+       │
+       ▼
+5. Script Writer: Beat-by-beat script with visual cues
+       │
+       ▼
+6. Cross-post via GitHub Action or local script
+       │
+       ▼
+7. After publish → Retention Analyzer (Studio CSV)
+       │
+       ▼
+8. Weekly → Channel Audit (THE one fix)
+```
 
 ---
 
-## Tech Stack
+## 🎯 Voice Profiles (Per Channel)
+
+| Channel | Voice File | Niche |
+|---------|------------|-------|
+| JP Cinematic Universe | `.claude/youtube/voice.md` | Tech cinema, Trishul Stories |
+| Java Prasad | `.claude/youtube/java-prasad-voice.md` | Java education, interviews |
+| JP Pipeline | `.claude/youtube/jp-pipeline-voice.md` | DevOps, CI/CD, automation |
+
+Create/edit voice profiles in the app sidebar → "Voice Profile" expander.
+
+---
+
+## 🛠 Tech Stack
 
 - **Streamlit** — Web app framework
-- **Plotly** — Interactive charts
+- **Plotly** — Interactive charts (Channel Analyzer)
 - **Pandas** — Data manipulation
-- **Requests** — API calls
-- **YouTube Data API v3** — YouTube data
-- **Instagram Graph API** — Instagram data
+- **Requests** — YouTube Data API calls
+- **Claude Code Skills** — 11 specialized YouTube skills
+- **Custom Python Tools** — 6 standalone analyzers (no deps)
 
 ---
 
-## License
+## 📄 License
 
 MIT License — feel free to use, modify, and deploy.
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repo
 2. Create feature branch (`git checkout -b feature/amazing`)
@@ -165,4 +233,4 @@ MIT License — feel free to use, modify, and deploy.
 
 ---
 
-**Built for content creators who want data-driven insights across platforms.** 🚀
+**Built for JP Cinematic Universe — Where Code Meets Cinema** 🔱
