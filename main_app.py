@@ -4,6 +4,13 @@ Combines: YouTube Channel Analyzer + YouTube Analyzer (Skills & Tools)
 """
 
 import streamlit as st
+import sys
+from pathlib import Path
+
+# Add project root to path for imports
+PROJECT_ROOT = Path(__file__).parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 # Page config
 st.set_page_config(
@@ -64,9 +71,11 @@ with st.sidebar:
 
 # ─── Main Content ───
 if app_mode == "📊 YouTube Channel Analyzer":
-    # Run the existing channel analyzer
-    exec(open("youtube_analyzer_streamlit.py", encoding="utf-8").read())
+    # Import and run the channel analyzer
+    from youtube_analyzer_streamlit import main
+    main()
 
 elif app_mode == "🎯 YouTube Analyzer (Skills & Tools)":
-    # Run our new YouTube Analyzer with skills/tools
-    exec(open("youtube_analyzer_app.py", encoding="utf-8").read())
+    # Import and run the skills/tools analyzer
+    from youtube_analyzer_app import main
+    main()
