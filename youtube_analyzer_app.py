@@ -24,11 +24,31 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Paths
-BASE_DIR = Path(__file__).parent
+# Paths - robust for both local and Streamlit Cloud (exec)
+def _get_base_dir() -> Path:
+    """Get base directory reliably even when run via exec()."""
+    # Try __file__ first (normal import)
+    try:
+        return Path(__file__).parent
+    except NameError:
+        pass
+    # Fallback: use current working directory
+    return Path.cwd()
+
+BASE_DIR = _get_base_dir()
 TOOLS_DIR = BASE_DIR / ".claude" / "youtube" / "python-tools"
 VOICE_DIR = BASE_DIR / ".claude" / "youtube"
 SKILLS_DIR = BASE_DIR / ".claude" / "skills"
+
+# Verify tools exist, fallback to common locations
+if not TOOLS_DIR.exists():
+    # Try Streamlit Cloud mount path
+    cloud_tools = Path("/mount/src/content-analyser/.claude/youtube/python-tools")
+    if cloud_tools.exists():
+        TOOLS_DIR = cloud_tools
+        VOICE_DIR = Path("/mount/src/content-analyser/.claude/youtube")
+        SKILLS_DIR = Path("/mount/src/content-analyser/.claude/skills")
+        BASE_DIR = Path("/mount/src/content-analyser")
 
 # Channel configs
 CHANNELS = {
