@@ -75,6 +75,14 @@ CHANNELS = {
         "niche": "devops automation",
         "language": "en",
         "category": "28"
+    },
+    "jp_news_360": {
+        "name": "JP News 360",
+        "handle": "@jp-news-360",
+        "voice_file": VOICE_DIR / "jp-news-360-voice.md",
+        "niche": "TTD, IPOs, cinema, cricket, trending",
+        "language": "ta+en",
+        "category": "25"
     }
 }
 

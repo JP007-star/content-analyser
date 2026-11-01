@@ -201,6 +201,7 @@ content-analyser/
 | JP Cinematic Universe | `.claude/youtube/voice.md` | Tech cinema, Trishul Stories |
 | Java Prasad | `.claude/youtube/java-prasad-voice.md` | Java education, interviews |
 | JP Pipeline | `.claude/youtube/jp-pipeline-voice.md` | DevOps, CI/CD, automation |
+| JP News 360 | `.claude/youtube/jp-news-360-voice.md` | TTD Darshan, IPOs, Cinema, Cricket, Trending |
 
 Create/edit voice profiles in the app sidebar → "Voice Profile" expander.
 

@@ -59,12 +59,13 @@ with st.sidebar:
 
     st.markdown("### 📺 Channels")
     channels = {
-        "JP Cinematic Universe": "@jpcinematicuniverse",
-        "Java Prasad": "@java-prasad",
-        "JP Pipeline": "@jp-pipeline"
+        "JP Cinematic Universe": ("@jpcinematicuniverse", "Tech cinema, Trishul Stories"),
+        "Java Prasad": ("@java-prasad", "Java education, interviews"),
+        "JP Pipeline": ("@jp-pipeline", "DevOps, CI/CD, automation"),
+        "JP News 360": ("@jp-news-360", "TTD Darshan, IPOs, Cinema, Cricket, Trending")
     }
-    for name, handle in channels.items():
-        st.write(f"• **{name}**: {handle}")
+    for name, (handle, niche) in channels.items():
+        st.write(f"• **{name}** ({niche}): {handle}")
 
     st.divider()
     st.caption("Built with Streamlit + Claude Skills")

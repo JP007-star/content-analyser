@@ -103,13 +103,14 @@ Upload to YouTube Shorts (@jpcinematicuniverse)
 
 ---
 
-## 🎬 For Your 3 Channels
+## 🎬 For Your 4 Channels
 
 | Channel | Voice File | Primary Skills |
 |---------|------------|----------------|
 | **JP Cinematic Universe** | `~/.claude/youtube/voice.md` ✅ | yt-shorts, yt-script, yt-package, yt-seo |
 | **Java Prasad** | `~/.claude/youtube/java-prasad-voice.md` | yt-script, yt-chapters, yt-retention, yt-audit |
 | **JP Pipeline** | `~/.claude/youtube/jp-pipeline-voice.md` | yt-script, yt-edit, yt-seo, yt-plan |
+| **JP News 360** | `~/.claude/youtube/jp-news-360-voice.md` | yt-shorts, yt-script, yt-package, yt-seo, yt-audit |
 
 ---
 
