@@ -28,6 +28,7 @@ Thumbs.db
 # Local data
 *.csv
 *.json
+!/.claude/**/*.json
 data/
 
 # Testing
