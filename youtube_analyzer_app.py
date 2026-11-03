@@ -17,12 +17,15 @@ import time
 # ──────────────────────────────────────────────
 # CONFIG
 # ──────────────────────────────────────────────
-st.set_page_config(
-    page_title="YouTube Analyzer | JP Cinematic Universe",
-    page_icon="🔱",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+try:
+    st.set_page_config(
+        page_title="YouTube Analyzer | JP Cinematic Universe",
+        page_icon="🔱",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+except Exception:
+    pass
 
 # Paths - robust for both local and Streamlit Cloud (exec)
 def _get_base_dir() -> Path:
@@ -93,7 +96,7 @@ def run_tool(script: str, args: List[str]) -> Dict[str, Any]:
     """Run a Python tool and return parsed output."""
     try:
         result = subprocess.run(
-            ["python", str(TOOLS_DIR / script)] + args,
+            [sys.executable, str(TOOLS_DIR / script)] + args,
             capture_output=True,
             text=True,
             timeout=60
@@ -158,12 +161,14 @@ def load_voice_profile(channel_key: str) -> str:
     """Load voice profile for a channel."""
     voice_file = CHANNELS[channel_key]["voice_file"]
     if voice_file.exists():
-        return voice_file.read_text()
+        return voice_file.read_text(encoding="utf-8")
     return "Voice profile not found. Create at: " + str(voice_file)
 
 
 def save_uploaded_file(uploaded_file, suffix: str) -> str:
     """Save uploaded file to temp location."""
+    if hasattr(uploaded_file, "seek"):
+        uploaded_file.seek(0)
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as f:
         f.write(uploaded_file.read())
         return f.name
@@ -281,15 +286,21 @@ def tab_hook_scorer(channel):
 
     # Formula reference
     with st.expander("📚 21 Hook Formulas Reference"):
-        hooks_json = (TOOLS_DIR / "hooks.json").read_text()
-        hooks_data = json.loads(hooks_json)["hooks"]
-        df = pd.DataFrame([{
-            "Formula": h["name"],
-            "Shape": h["shape"],
-            "Example": h["example"][:80] + "...",
-            "Fails When": h["fails_when"][:60] + "..."
-        } for h in hooks_data])
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        hooks_path = TOOLS_DIR / "hooks.json"
+        if not hooks_path.exists():
+            hooks_path = BASE_DIR / ".claude" / "skills" / "yt-script" / "hooks.json"
+        if hooks_path.exists():
+            hooks_json = hooks_path.read_text(encoding="utf-8")
+            hooks_data = json.loads(hooks_json)["hooks"]
+            df = pd.DataFrame([{
+                "Formula": h["name"],
+                "Shape": h["shape"],
+                "Example": h["example"][:80] + "...",
+                "Fails When": h["fails_when"][:60] + "..."
+            } for h in hooks_data])
+            st.dataframe(df, use_container_width=True, hide_index=True)
+        else:
+            st.info("Formula reference file hooks.json not found.")
 
 
 def render_hook_result(result: Dict, hook: str):
@@ -412,9 +423,9 @@ def tab_chapters(channel):
     )
 
     if uploaded:
-        tmp_path = save_uploaded_file(uploaded, f".{uploaded.name.split('.')[-1]}")
-        try:
-            if st.button("Generate Chapters", type="primary"):
+        if st.button("Generate Chapters", type="primary"):
+            tmp_path = save_uploaded_file(uploaded, f".{uploaded.name.split('.')[-1]}")
+            try:
                 with st.spinner("Generating..."):
                     result = run_chapters(tmp_path)
                 if result["success"]:
@@ -423,8 +434,9 @@ def tab_chapters(channel):
                     st.caption("⚠️ Retitle every line before pasting. These are topic words, not your words.")
                 else:
                     st.error(f"Error: {result['stderr']}")
-        finally:
-            os.unlink(tmp_path)
+            finally:
+                if os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
 
     # Format guide
     with st.expander("📋 Supported Formats"):
@@ -470,13 +482,12 @@ def tab_retention(channel):
         )
 
     if retention_file:
-        retention_path = save_uploaded_file(retention_file, ".csv")
-        transcript_path = None
-        if transcript_file:
-            transcript_path = save_uploaded_file(transcript_file, f".{transcript_file.name.split('.')[-1]}")
-
-        try:
-            if st.button("Analyze Retention", type="primary"):
+        if st.button("Analyze Retention", type="primary"):
+            retention_path = save_uploaded_file(retention_file, ".csv")
+            transcript_path = None
+            if transcript_file:
+                transcript_path = save_uploaded_file(transcript_file, f".{transcript_file.name.split('.')[-1]}")
+            try:
                 with st.spinner("Analyzing retention curve..."):
                     result = run_retention(retention_path, transcript_path)
                 if result["success"]:
@@ -484,10 +495,11 @@ def tab_retention(channel):
                     render_retention_output(result["stdout"])
                 else:
                     st.error(f"Error: {result['stderr']}")
-        finally:
-            os.unlink(retention_path)
-            if transcript_path:
-                os.unlink(transcript_path)
+            finally:
+                if os.path.exists(retention_path):
+                    os.unlink(retention_path)
+                if transcript_path and os.path.exists(transcript_path):
+                    os.unlink(transcript_path)
 
 
 def render_retention_output(output: str):
@@ -525,9 +537,9 @@ def tab_edit_decisions(channel):
     )
 
     if uploaded:
-        tmp_path = save_uploaded_file(uploaded, f".{uploaded.name.split('.')[-1]}")
-        try:
-            if st.button("Generate EDL", type="primary"):
+        if st.button("Generate EDL", type="primary"):
+            tmp_path = save_uploaded_file(uploaded, f".{uploaded.name.split('.')[-1]}")
+            try:
                 with st.spinner("Finding cuts..."):
                     result = run_deadair(tmp_path, floor)
                 if result["success"]:
@@ -535,8 +547,9 @@ def tab_edit_decisions(channel):
                     render_edl_output(result["stdout"])
                 else:
                     st.error(f"Error: {result['stderr']}")
-        finally:
-            os.unlink(tmp_path)
+            finally:
+                if os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
 
 
 def render_edl_output(output: str):
@@ -563,9 +576,9 @@ def tab_viral_research(channel):
     min_mult = st.slider("Minimum multiple of channel median", 1.0, 5.0, 2.0, 0.1)
 
     if uploaded:
-        tmp_path = save_uploaded_file(uploaded, ".json")
-        try:
-            if st.button("Rank Outliers", type="primary"):
+        if st.button("Rank Outliers", type="primary"):
+            tmp_path = save_uploaded_file(uploaded, ".json")
+            try:
                 with st.spinner("Ranking..."):
                     result = run_swipe(tmp_path, min_mult)
                 if result["success"]:
@@ -573,8 +586,9 @@ def tab_viral_research(channel):
                     render_swipe_output(result["stdout"])
                 else:
                     st.error(f"Error: {result['stderr']}")
-        finally:
-            os.unlink(tmp_path)
+            finally:
+                if os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
 
     # Manual entry
     with st.expander("➕ Manual Entry (add videos one by one)"):
@@ -848,7 +862,8 @@ def render_content_plan(capacity: int, horizon: str, channel):
     series = {
         "jp_cinematic": ["Trishul Stories", "Cinematic Coding", "Interview Cinematics", "Bug of the Week"],
         "java_prasad": ["Java Deep Dive", "Interview Questions", "DSA Visualized", "Code Review"],
-        "jp_pipeline": ["GitHub Actions Deep Dive", "CI/CD Patterns", "War Stories", "Tool Comparison"]
+        "jp_pipeline": ["GitHub Actions Deep Dive", "CI/CD Patterns", "War Stories", "Tool Comparison"],
+        "jp_news_360": ["TTD Darshan Updates", "IPO & Market Watch", "Cinema Reviews", "Trending News"]
     }
 
     channel_series = series.get(list(CHANNELS.keys())[list(CHANNELS.values()).index(channel)], ["Series 1", "Series 2", "Series 3"])
@@ -863,6 +878,15 @@ def render_content_plan(capacity: int, horizon: str, channel):
             day = days[i % 7]
             series_name = channel_series[i % len(channel_series)]
             plan.append({"Day": day, "Series": series_name, "Topic": f"[Topic for {series_name}]", "Status": "💡 Idea"})
+        st.dataframe(pd.DataFrame(plan), use_container_width=True, hide_index=True)
+    elif horizon == "month":
+        days = ["Mon", "Wed", "Fri", "Sat", "Sun", "Tue", "Thu"]
+        plan = []
+        for week in range(1, 5):
+            for i in range(capacity):
+                day = days[i % 7]
+                series_name = channel_series[(week * capacity + i) % len(channel_series)]
+                plan.append({"Week": f"Week {week}", "Day": day, "Series": series_name, "Topic": f"[Week {week}: {series_name}]", "Status": "💡 Idea"})
         st.dataframe(pd.DataFrame(plan), use_container_width=True, hide_index=True)
 
     st.markdown("""

@@ -29,6 +29,8 @@ Thumbs.db
 *.csv
 *.json
 !/.claude/**/*.json
+!hooks.json
+!devcontainer.json
 data/
 
 # Testing

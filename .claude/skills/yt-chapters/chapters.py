@@ -14,7 +14,11 @@ the pause was and how much the vocabulary changes across it. It is a first draft
 summariser.
 """
 import json, os, re, sys
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "yt-edit"))
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, "..", "yt-edit"))
+sys.path.insert(0, os.path.join(HERE, "..", "python-tools"))
+sys.path.insert(0, os.path.join(HERE, "..", "youtube", "python-tools"))
 from deadair import load, parse_ts  # noqa: E402  (same parser, one implementation)
 
 STOP = set("the a an of for to in on and or is are was were be been with this that it as at by from "

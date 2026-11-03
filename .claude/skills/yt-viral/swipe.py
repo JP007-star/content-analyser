@@ -19,7 +19,14 @@ about the words on screen, not a claim about why the video worked.
 import json, os, re, statistics, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FORMULAS = json.load(open(os.path.join(HERE, "..", "yt-script", "hooks.json")))["hooks"]
+hooks_candidates = [
+    os.path.join(HERE, "hooks.json"),
+    os.path.join(HERE, "..", "..", "skills", "yt-script", "hooks.json"),
+    os.path.join(HERE, "..", "yt-script", "hooks.json"),
+    os.path.join(HERE, "..", "python-tools", "hooks.json"),
+]
+hooks_path = next((h for h in hooks_candidates if os.path.exists(h)), hooks_candidates[0])
+FORMULAS = json.load(open(hooks_path, encoding="utf-8"))["hooks"]
 
 def classify(title):
     scored = []
@@ -35,7 +42,7 @@ def main():
     lo = float(a[a.index("--min") + 1]) if "--min" in a else 1.5
     files = [x for x in a if not x.startswith("--") and not re.match(r"^[\d.]+$", x)]
     if not files or not os.path.exists(files[0]): print(__doc__); sys.exit(1)
-    rows = json.load(open(files[0]))
+    rows = json.load(open(files[0], encoding="utf-8", errors="replace"))
     if isinstance(rows, dict): rows = rows.get("videos", [])
     by = {}
     for r in rows: by.setdefault(r.get("channel", "?"), []).append(r)

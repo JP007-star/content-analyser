@@ -16,12 +16,15 @@ from typing import Optional, Dict, List
 import time
 
 # ============ CONFIG ============
-st.set_page_config(
-    page_title="YouTube Channel Analyzer",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+try:
+    st.set_page_config(
+        page_title="YouTube Channel Analyzer",
+        page_icon="📊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+except Exception:
+    pass
 
 # Custom CSS
 st.markdown("""

@@ -63,7 +63,11 @@ def main():
     slide = sum(mid) / len(mid) if mid else 0
     said = {}
     if tr and os.path.exists(tr):
-        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "yt-edit"))
+        HERE = os.path.dirname(os.path.abspath(__file__))
+        sys.path.insert(0, HERE)
+        sys.path.insert(0, os.path.join(HERE, "..", "yt-edit"))
+        sys.path.insert(0, os.path.join(HERE, "..", "python-tools"))
+        sys.path.insert(0, os.path.join(HERE, "..", "youtube", "python-tools"))
         from deadair import load as load_cues
         cues = load_cues(tr)
         for c in cliffs:
