@@ -1001,7 +1001,7 @@ def main():
         <br>
         <a href="https://github.com/Jakeschincariol/youtube-agent-skill" target="_blank">Source Skills</a> •
         <a href="https://youtube.com/@jpcinematicuniverse" target="_blank">Channel</a> •
-        <a href="https://instagram.com/trishul.stories" target="_blank">Instagram</a>
+        <a href="https://instagram.com/jcu.stories" target="_blank">Instagram</a>
     </div>
     """, unsafe_allow_html=True)
 

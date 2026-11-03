@@ -74,7 +74,7 @@ python swipe.py --niche="tech storytelling" --limit=15
 ## 📝 Content Pipeline
 
 ```
-Instagram Reel (@trishul.stories)
+Instagram Reel (@jcu.stories)
         │
         ▼
 Download MP4 + caption

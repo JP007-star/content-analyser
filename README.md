@@ -168,7 +168,7 @@ content-analyser/
 ## 🎬 Workflow: From Instagram Reel → YouTube Short
 
 ```
-1. Instagram Reel posted (@trishul.stories)
+1. Instagram Reel posted (@jcu.stories)
        │
        ▼
 2. Hook Scorer: Score your IG caption first line
