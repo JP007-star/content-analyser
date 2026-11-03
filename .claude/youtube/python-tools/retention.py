@@ -1,3 +1,11 @@
+import sys
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 #!/usr/bin/env python3
 """retention.py - read a YouTube Studio audience-retention export and find the leaks.
 

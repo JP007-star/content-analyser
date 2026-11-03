@@ -1,3 +1,11 @@
+import sys
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 #!/usr/bin/env python3
 """swipe.py - rank collected videos by how far each beat its OWN channel, then name the formula.
 
